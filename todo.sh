@@ -4,7 +4,7 @@
 # Copyright: DELVILLE Thibaut
 ##########################################################################
 ##########################################################################
-# Program: petit script de tache a faire
+# Programme : petit script de tache a faire
 ##########################################################################
 VERSION="0.1.0"; # <release>.<major change>.<minor change>
 PROGNAME="todo";
