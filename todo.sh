@@ -7,7 +7,7 @@
 # Programme : petit script de tache a faire
 ##########################################################################
 VERSION="0.1.0"; # <release>.<major change>.<minor change>
-PROGRAME="todo";
+PROGRAMME="todo";
 AUTHOR="Me";
 clear
 
