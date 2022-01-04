@@ -8,7 +8,7 @@
 ##########################################################################
 VERSION="0.1.0"; # <release>.<major change>.<minor change>
 PROGRAMME="todo";
-AUTHOR="Me";
+AUTHOR="DELVILLE Thibaut";
 clear
 
 #DIR=$(pwd)
