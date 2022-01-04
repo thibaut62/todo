@@ -11,7 +11,6 @@ PROGRAMME="todo";
 AUTHOR="DELVILLE Thibaut";
 clear
 
-#DIR=$(pwd)
 DIR=$(cd $( dirname ${BASH_SOURCE[0]}) && pwd )
 
 # Test si le fichier .todo.list existe sinon on le creer
@@ -127,4 +126,3 @@ function menu()
 
 list-a-faire
 menu
-
