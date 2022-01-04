@@ -22,11 +22,11 @@ if [ ! -e $DIR/.todo.list ]
   sed -i '/^$/d' $DIR/.todo.list # suppr ligne vides
 fi
 
-# Declaration des variables :
+# Déclaration des variables :
 DATE=$(date '+%x')
 PS3="Votre choix : "
 
-# declaration des fonctions
+# Déclaration des fonctions :
 
 function check-input()
 {
