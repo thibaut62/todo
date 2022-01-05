@@ -11,10 +11,12 @@
 VERSION="0.1.0"; # <release>.<major change>.<minor change>
 PROGRAMME="todo";
 AUTHOR="DELVILLE Thibaut";
-
 clear
 
-DIR=$(cd $( dirname ${BASH_SOURCE[0]}) && pwd )
+echo -e "Saisissez le chmin de dossier ou se trouve le fichier .todo.list ou le créer "
+read -p "Chemin : " DIR
+
+#DIR=$(cd $( dirname ${BASH_SOURCE[0]}) && pwd )
 
 # Test si le fichier .todo.list existe sinon on le creer
 
