@@ -11,10 +11,19 @@
 VERSION="0.1.0"; # <release>.<major change>.<minor change>
 PROGRAMME="todo";
 AUTHOR="DELVILLE Thibaut";
-clear
 
-echo -e "Saisissez le chmin de dossier ou se trouve le fichier .todo.list ou le créer "
-read -p "Chemin : " DIR
+##########################################################################
+# Déclaration des variables:
+##########################################################################
+
+DIALOG=${DIALOG=Xdialog}
+
+##########################################################################
+# Début du programme:
+##########################################################################
+
+clear
+DIR=$($DIALOG --dselect / 0 0 2>&1 1>/dev/tty)
 
 #DIR=$(cd $( dirname ${BASH_SOURCE[0]}) && pwd )
 
