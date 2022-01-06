@@ -17,42 +17,40 @@ AUTHOR="DELVILLE Thibaut";
 ##########################################################################
 
 DIALOG=${DIALOG=Xdialog}
+#DIR=$(cd $( dirname ${BASH_SOURCE[0]}) && pwd ) # Récupration du chemin d'ou le sript est lancer
+DATE=$(date '+%x')
+PS3="Votre choix : "
 
 ##########################################################################
 # Début du programme:
 ##########################################################################
 
+source conf.ini
 clear
-#DIR=$($DIALOG --dselect / 0 0 2>&1 1>/dev/tty)
-
-#DIR=$(cd $( dirname ${BASH_SOURCE[0]}) && pwd )
 
 ##########################################################################
 # On va récuperer le fichier .todo.list distant sur mon raspberry
 ##########################################################################
 
 DEST_TODO=$($DIALOG --title "Emplacement du dossier ou se trouve .todo.list" --dselect / 0 0 2>&1 1>/dev/tty)
-scp -P 2202 pi@82.64.186.153:/home/pi/Documents/.todo.list $DEST_TODO/
+scp $PORT_SCP $ADRESSE/.todo.list $DEST_TODO/
 
-#################################################################
+##########################################################################
 # Test si le fichier .todo.list existe sinon on le creer
+##########################################################################
 
-#if [ ! -e $DIR/.todo.list ]
-# then
-#  touch $DIR/.todo.list
-# else
-#  sed -i '/^$/d' $DIR/.todo.list # suppr ligne vides
-#fi
-##################################################################
+if [ ! -e $DEST_TODO/.todo.list ]
+ then
+  touch $DEST_TODO/.todo.list
+ else
+  sed -i '/^$/d' $DEST_TODO/.todo.list # supprimer les ligne vides
+fi
 
-
-# Déclaration des variables :
-DATE=$(date '+%x')
-PS3="Votre choix : "
-
+###########################################################################
 # Déclaration des fonctions :
+###########################################################################
 
-function check-input()
+check-input()
 {
  while [ -z "$saisi" ] 
  do
@@ -61,16 +59,16 @@ function check-input()
  done
 }
 
-function ajout()
+ajout() # Ajouter une tâche
 {
  echo -e "\nQuel tache voulez vous ajouter ?"
  read -p "Saisi : " saisi
  check-input
  echo "$saisi ajouté le $DATE" >> $DEST_TODO/.todo.list
- scp -P 2202 $DEST_TODO/.todo.list pi@82.64.186.153:/home/pi/Documents/
+ scp $PORT_SCP $DEST_TODO/.todo.list $ADRESSE/
 }
 
-function fait()
+fait() # Marquer la ligne d'une tâche comme faite
 {
  echo -e "\nQuel tâche voulez vous marquer comme faite ?"
  read -p "Saisi : " saisi
@@ -80,19 +78,19 @@ function fait()
  sed -i "${saisi}d" $DEST_TODO/.todo.list
  sed -i '/^$/d' $DEST_TODO/.todo.list
  echo $lignecomp >> $DEST_TODO/.todo.list
- scp -P 2202 $DEST_TODO/.todo.list pi@82.64.186.153:/home/pi/Documents/
+ scp $PORT_SCP $DEST_TODO/.todo.list $ADRESSE/
 }
 
-function supp()
+supp() # Supprimer une ligne de tâche
 {
  echo -e "\nQuel tâche voulez vous marquer comme finie ?"
  read -p "Saisi : " saisi
  check-input
  sed -i "${saisi}d" $DEST_TODO/.todo.list
- scp -P 2202 $DEST_TODO/.todo.list pi@82.64.186.153:/home/pi/Documents/
+ scp $PORT_SCP $DEST_TODO/.todo.list $ADRESSE/
 }
 
-function list-a-faire()
+list-a-faire() # Afficher la liste à faire
 {
  clear
  echo -e "\e[92m-----------------------------"
@@ -102,7 +100,7 @@ function list-a-faire()
  echo -e "\n----------\n"
 }
 
-function list-fait()
+list-fait() # Afficher la liste des tâches marquées comme lu
 {
  clear
  echo -e "\e[92m---------------------------"
@@ -111,7 +109,8 @@ function list-fait()
  nl $DEST_TODO/.todo.list | grep FAIT
  echo -e "\n----------\n"
 }
-function menu()
+
+menu() # Menu
 {
  select item in "Ajouter une tâche" "Marquer une tâche FAITE" "Afficher les tâches faites" "Supprimer une tâche" "Retour" "Quitter"
   do
@@ -141,7 +140,7 @@ function menu()
                     ;;
                   6)
                     clear
-                    scp -P 2202 $DEST_TODO/.todo.list pi@82.64.186.153:/home/pi/Documents/
+                    scp $PORT_SCP $DEST_TODO/.todo.list $ADRESSE/
                     rm $DEST_TODO/.todo.list                    
                     echo "Bonne fin de journée."
                     exit
