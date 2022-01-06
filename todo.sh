@@ -8,7 +8,7 @@
 # Programme : petit script de tache a faire
 ##########################################################################
 
-VERSION="0.1.0"; # <release>.<major change>.<minor change>
+VERSION="0.2.0"; # <release>.<major change>.<minor change>
 PROGRAMME="todo";
 AUTHOR="DELVILLE Thibaut";
 
@@ -23,18 +23,28 @@ DIALOG=${DIALOG=Xdialog}
 ##########################################################################
 
 clear
-DIR=$($DIALOG --dselect / 0 0 2>&1 1>/dev/tty)
+#DIR=$($DIALOG --dselect / 0 0 2>&1 1>/dev/tty)
 
 #DIR=$(cd $( dirname ${BASH_SOURCE[0]}) && pwd )
 
+##########################################################################
+# On va récuperer le fichier .todo.list distant sur mon raspberry
+##########################################################################
+
+DEST_TODO=$($DIALOG --title "Emplacement du dossier ou se trouve .todo.list" --dselect / 0 0 2>&1 1>/dev/tty)
+scp -P 2202 pi@82.64.186.153:/home/pi/Documents/.todo.list $DEST_TODO/
+
+#################################################################
 # Test si le fichier .todo.list existe sinon on le creer
 
-if [ ! -e $DIR/.todo.list ]
- then
-  touch $DIR/.todo.list
- else
-  sed -i '/^$/d' $DIR/.todo.list # suppr ligne vides
-fi
+#if [ ! -e $DIR/.todo.list ]
+# then
+#  touch $DIR/.todo.list
+# else
+#  sed -i '/^$/d' $DIR/.todo.list # suppr ligne vides
+#fi
+##################################################################
+
 
 # Déclaration des variables :
 DATE=$(date '+%x')
@@ -56,7 +66,8 @@ function ajout()
  echo -e "\nQuel tache voulez vous ajouter ?"
  read -p "Saisi : " saisi
  check-input
- echo "$saisi ajouté le $DATE" >> $DIR/.todo.list
+ echo "$saisi ajouté le $DATE" >> $DEST_TODO/.todo.list
+ scp -P 2202 $DEST_TODO/.todo.list pi@82.64.186.153:/home/pi/Documents/
 }
 
 function fait()
@@ -64,11 +75,12 @@ function fait()
  echo -e "\nQuel tâche voulez vous marquer comme faite ?"
  read -p "Saisi : " saisi
  check-input
- ligne=$(sed -n ${saisi}p $DIR/.todo.list)
+ ligne=$(sed -n ${saisi}p $DEST_TODO/.todo.list)
  lignecomp=$(echo "$ligne FAIT")
- sed -i "${saisi}d" $DIR/.todo.list
- sed -i '/^$/d' $DIR/.todo.list
- echo $lignecomp >> $DIR/.todo.list
+ sed -i "${saisi}d" $DEST_TODO/.todo.list
+ sed -i '/^$/d' $DEST_TODO/.todo.list
+ echo $lignecomp >> $DEST_TODO/.todo.list
+ scp -P 2202 $DEST_TODO/.todo.list pi@82.64.186.153:/home/pi/Documents/
 }
 
 function supp()
@@ -76,7 +88,8 @@ function supp()
  echo -e "\nQuel tâche voulez vous marquer comme finie ?"
  read -p "Saisi : " saisi
  check-input
- sed -i "${saisi}d" $DIR/.todo.list
+ sed -i "${saisi}d" $DEST_TODO/.todo.list
+ scp -P 2202 $DEST_TODO/.todo.list pi@82.64.186.153:/home/pi/Documents/
 }
 
 function list-a-faire()
@@ -85,7 +98,7 @@ function list-a-faire()
  echo -e "\e[92m-----------------------------"
  echo -e "| Liste des tâches a faires :"
  echo -e "-----------------------------\n\e[0m"
- nl $DIR/.todo.list | grep -v FAIT
+ nl $DEST_TODO/.todo.list | grep -v FAIT
  echo -e "\n----------\n"
 }
 
@@ -95,7 +108,7 @@ function list-fait()
  echo -e "\e[92m---------------------------"
  echo -e "| Liste des tâches faites :"
  echo -e "---------------------------\n\e[0m"
- nl $DIR/.todo.list | grep FAIT
+ nl $DEST_TODO/.todo.list | grep FAIT
  echo -e "\n----------\n"
 }
 function menu()
@@ -127,7 +140,9 @@ function menu()
                     menu
                     ;;
                   6)
-                    clear                    
+                    clear
+                    scp -P 2202 $DEST_TODO/.todo.list pi@82.64.186.153:/home/pi/Documents/
+                    rm $DEST_TODO/.todo.list                    
                     echo "Bonne fin de journée."
                     exit
                     ;;
