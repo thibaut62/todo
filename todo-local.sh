@@ -16,8 +16,8 @@ AUTHOR="DELVILLE Thibaut";
 # Déclaration des variables:
 ##########################################################################
 
-echo -e "Saisissez le chemin du dossier ou se trouve le fichier .todo.list ou le créer "
-read -p "Chemin : " DIR
+DIALOG=${DIALOG=Xdialog}
+DIR=$($DIALOG --title "Emplacement du dossier ou se trouve .todoL.list" --dselect / 0 0 2>&1 1>/dev/tty)
 DATE=$(date '+%x')
 PS3="Votre choix : "
 
@@ -28,14 +28,14 @@ PS3="Votre choix : "
 clear
 
 ##########################################################################
-# Test si le fichier .todo.list existe sinon on le creer
+# Test si le fichier .todoL.list existe sinon on le creer
 ##########################################################################
 
-if [ ! -e $DEST_TODO/.todo.list ]
+if [ ! -e $DIR/.todoL.list ]
  then
-  touch $DEST_TODO/.todo.list
+  touch $DIR/.todoL.list
  else
-  sed -i '/^$/d' $DEST_TODO/.todo.list # supprimer les ligne vides
+  sed -i '/^$/d' $DIR/.todoL.list # suppr ligne vides
 fi
 
 ###########################################################################
@@ -56,7 +56,7 @@ function ajout()
  echo -e "\nQuel tache voulez vous ajouter ?"
  read -p "Saisi : " saisi
  check-input
- echo "$saisi ajouté le $DATE" >> $DIR/.todo.list
+ echo "$saisi ajouté le $DATE" >> $DIR/.todoL.list
 }
 
 function fait()
@@ -64,11 +64,11 @@ function fait()
  echo -e "\nQuel tâche voulez vous marquer comme faite ?"
  read -p "Saisi : " saisi
  check-input
- ligne=$(sed -n ${saisi}p $DIR/.todo.list)
+ ligne=$(sed -n ${saisi}p $DIR/.todoL.list)
  lignecomp=$(echo "$ligne FAIT")
- sed -i "${saisi}d" $DIR/.todo.list
- sed -i '/^$/d' $DIR/.todo.list
- echo $lignecomp >> $DIR/.todo.list
+ sed -i "${saisi}d" $DIR/.todoL.list
+ sed -i '/^$/d' $DIR/.todoL.list
+ echo $lignecomp >> $DIR/.todoL.list
 }
 
 function supp()
@@ -76,7 +76,7 @@ function supp()
  echo -e "\nQuel tâche voulez vous marquer comme finie ?"
  read -p "Saisi : " saisi
  check-input
- sed -i "${saisi}d" $DIR/.todo.list
+ sed -i "${saisi}d" $DIR/.todoL.list
 }
 
 function list-a-faire()
@@ -85,7 +85,7 @@ function list-a-faire()
  echo -e "\e[92m-----------------------------"
  echo -e "| Liste des tâches a faires :"
  echo -e "-----------------------------\n\e[0m"
- nl $DIR/.todo.list | grep -v FAIT
+ nl $DIR/.todoL.list | grep -v FAIT
  echo -e "\n----------\n"
 }
 
@@ -95,7 +95,7 @@ function list-fait()
  echo -e "\e[92m---------------------------"
  echo -e "| Liste des tâches faites :"
  echo -e "---------------------------\n\e[0m"
- nl $DIR/.todo.list | grep FAIT
+ nl $DIR/.todoL.list | grep FAIT
  echo -e "\n----------\n"
 }
 function menu()

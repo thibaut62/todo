@@ -29,21 +29,21 @@ source conf.ini
 clear
 
 ##########################################################################
-# On va récuperer le fichier .todo.list distant sur mon raspberry
+# On va récuperer le fichier .todoR.list distant sur mon raspberry
 ##########################################################################
 
-DEST_TODO=$($DIALOG --title "Emplacement du dossier ou se trouve .todo.list" --dselect / 0 0 2>&1 1>/dev/tty)
-scp $PORT_SCP $ADRESSE/.todo.list $DEST_TODO/
+DEST_TODO=$($DIALOG --title "Emplacement du dossier ou se trouve .todoR.list" --dselect / 0 0 2>&1 1>/dev/tty)
+scp $PORT_SCP $ADRESSE/.todoR.list $DEST_TODO/
 
 ##########################################################################
-# Test si le fichier .todo.list existe sinon on le creer
+# Test si le fichier .todoR.list existe sinon on le creer
 ##########################################################################
 
-if [ ! -e $DEST_TODO/.todo.list ]
+if [ ! -e $DEST_TODO/.todoR.list ]
  then
-  touch $DEST_TODO/.todo.list
+  touch $DEST_TODO/.todoR.list
  else
-  sed -i '/^$/d' $DEST_TODO/.todo.list # supprimer les ligne vides
+  sed -i '/^$/d' $DEST_TODO/.todoR.list # supprimer les ligne vides
 fi
 
 ###########################################################################
@@ -64,8 +64,8 @@ ajout() # Ajouter une tâche
  echo -e "\nQuel tache voulez vous ajouter ?"
  read -p "Saisi : " saisi
  check-input
- echo "$saisi ajouté le $DATE" >> $DEST_TODO/.todo.list
- scp $PORT_SCP $DEST_TODO/.todo.list $ADRESSE/
+ echo "$saisi ajouté le $DATE" >> $DEST_TODO/.todoR.list
+ scp $PORT_SCP $DEST_TODO/.todoR.list $ADRESSE/
 }
 
 fait() # Marquer la ligne d'une tâche comme faite
@@ -73,12 +73,12 @@ fait() # Marquer la ligne d'une tâche comme faite
  echo -e "\nQuel tâche voulez vous marquer comme faite ?"
  read -p "Saisi : " saisi
  check-input
- ligne=$(sed -n ${saisi}p $DEST_TODO/.todo.list)
+ ligne=$(sed -n ${saisi}p $DEST_TODO/.todoR.list)
  lignecomp=$(echo "$ligne FAIT")
- sed -i "${saisi}d" $DEST_TODO/.todo.list
- sed -i '/^$/d' $DEST_TODO/.todo.list
- echo $lignecomp >> $DEST_TODO/.todo.list
- scp $PORT_SCP $DEST_TODO/.todo.list $ADRESSE/
+ sed -i "${saisi}d" $DEST_TODO/.todoR.list
+ sed -i '/^$/d' $DEST_TODO/.todoR.list
+ echo $lignecomp >> $DEST_TODO/.todoR.list
+ scp $PORT_SCP $DEST_TODO/.todoR.list $ADRESSE/
 }
 
 supp() # Supprimer une ligne de tâche
@@ -86,8 +86,8 @@ supp() # Supprimer une ligne de tâche
  echo -e "\nQuel tâche voulez vous marquer comme finie ?"
  read -p "Saisi : " saisi
  check-input
- sed -i "${saisi}d" $DEST_TODO/.todo.list
- scp $PORT_SCP $DEST_TODO/.todo.list $ADRESSE/
+ sed -i "${saisi}d" $DEST_TODO/.todoR.list
+ scp $PORT_SCP $DEST_TODO/.todoR.list $ADRESSE/
 }
 
 list-a-faire() # Afficher la liste à faire
@@ -96,7 +96,7 @@ list-a-faire() # Afficher la liste à faire
  echo -e "\e[92m-----------------------------"
  echo -e "| Liste des tâches a faires :"
  echo -e "-----------------------------\n\e[0m"
- nl $DEST_TODO/.todo.list | grep -v FAIT
+ nl $DEST_TODO/.todoR.list | grep -v FAIT
  echo -e "\n----------\n"
 }
 
@@ -106,7 +106,7 @@ list-fait() # Afficher la liste des tâches marquées comme lu
  echo -e "\e[92m---------------------------"
  echo -e "| Liste des tâches faites :"
  echo -e "---------------------------\n\e[0m"
- nl $DEST_TODO/.todo.list | grep FAIT
+ nl $DEST_TODO/.todoR.list | grep FAIT
  echo -e "\n----------\n"
 }
 
@@ -140,8 +140,8 @@ menu() # Menu
                     ;;
                   6)
                     clear
-                    scp $PORT_SCP $DEST_TODO/.todo.list $ADRESSE/
-                    rm $DEST_TODO/.todo.list                    
+                    scp $PORT_SCP $DEST_TODO/.todoR.list $ADRESSE/
+                    rm $DEST_TODO/.todoR.list                    
                     echo "Bonne fin de journée."
                     exit
                     ;;
